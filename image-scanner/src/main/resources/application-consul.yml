@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: image-scanner-service
+  cloud:
+    consul:
+      host: consul
+      port: 8500
+      discovery:
+        service-name: image-scanner-service
+        enabled: true
+        prefer-ip-address: false
+        instance-id: ${spring.application.name}:${HOSTNAME}
+
+server:
+  port: 8080
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+  server:
+    port: 8081

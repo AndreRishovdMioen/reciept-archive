@@ -1,0 +1,38 @@
+services:
+  image-scanner-service:
+    image: image-scanner:0.0.1-SNAPSHOT
+    build:
+      context: ./image-scanner
+    container_name: image-scanner-service
+    environment:
+      SPRING_PROFILES_ACTIVE: consul
+    networks:
+      - receipt-net
+
+  gateway:
+    image: gateway:0.0.1-SNAPSHOT
+    build:
+      context: ./gateway
+    container_name: gateway-service
+    environment:
+      SPRING_PROFILES_ACTIVE: consul,env
+    ports:
+      - "8010:8010"
+      - "8091:8091"
+    depends_on:
+      - consul
+    networks:
+      - receipt-net
+
+  consul:
+    image: hashicorp/consul:1.15
+    container_name: consul
+    ports:
+      - "8500:8500"
+    command: agent -dev -client=0.0.0.0
+    networks:
+      - receipt-net
+
+networks:
+  receipt-net:
+    driver: bridge
